@@ -1,10 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { getTalent } from '../../actions';
 import { getTalentJobOffers } from '../../actions';
+import { getJobs } from '../../actions'
 import '../../styles/tjobofferlist.scss';
 import Container from '../../styles/styledComponents/Container';
 import TalentOffersCard from './TalentOffersCard';
 import styled from 'styled-components';
+import jwt from 'jsonwebtoken';
 
 const OffersContainer = styled(Container)`
     margin-top: 21vh; 
@@ -15,11 +18,14 @@ class TalentOfferView extends React.Component {
         this.state = {
             hiringJobs: [],
             hiredJobs: [],
-            declinedJobs: []
+            declinedJobs: [],
+            userId: jwt.decode(localStorage.getItem("token")).userId
         }
     }
 
     async componentDidMount() {
+        await this.props.getTalent(this.state.userId)
+        await this.props.getJobs()
         await this.props.getTalentJobOffers(this.props.talent[0].talentId)
         await this.sortJobs()
     }
@@ -78,6 +84,7 @@ class TalentOfferView extends React.Component {
             <OffersContainer>
                 <h3 className="jobs-type">Pending Jobs</h3>
                 {this.state.hiringJobs.map(job => {
+                    console.log("once two three times")
                     return <TalentOffersCard job={job} />
                 })}
                 <h3 className="jobs-type">Accepted/Hired Jobs</h3>
@@ -100,4 +107,4 @@ const mapStateToProps = state => ({
 })
 
 
-export default connect(mapStateToProps, { getTalentJobOffers })(TalentOfferView)
+export default connect(mapStateToProps, { getTalentJobOffers,getJobs, getTalent })(TalentOfferView)

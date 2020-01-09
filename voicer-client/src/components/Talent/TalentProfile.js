@@ -3,7 +3,11 @@ import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import Select, { components } from 'react-select';
 import { connect } from 'react-redux';
 import jwt from 'jsonwebtoken';
-import { getLanguages, addTalentLanguage } from '../../actions/language';
+import {
+  getLanguages,
+  addTalentLanguage,
+  getPrevTLang
+} from '../../actions/language';
 import { getAccents, addTalentAccent } from '../../actions/accent';
 import { getTalent } from '../../actions';
 import { addTalentBio } from '../../actions/talentBio';
@@ -47,10 +51,26 @@ class TalentProfile extends React.Component {
   //On Mount, lang/accents are pulled from back-end and added to store, then
   //modified to a format that the form fields can use and put into state
   componentDidMount() {
-    this.props.getTalent(this.state.userId).then(res => this.setState({talent: this.props.talent[0]}))
+    this.props
+      .getTalent(this.state.userId)
+      .then(res => this.setState({ talent: this.props.talent[0] }));
     this.props.getLanguages().then(this.modifyLanguage);
     this.props.getAccents().then(this.modifyAccents);
+    this.props.getPrevTLang(this.state.userId).then(res => {
+      const prevLang = this.testModify(this.props.prevLanguages);
+      this.setState({ languages: prevLang });
+    });
   }
+
+  testModify = ogArray => {
+    const newArray = ogArray.map(item => ({
+      value: item.language,
+      label: item.language,
+      languageId: item.languageId
+    }));
+
+    return newArray;
+  };
 
   modifyLanguage = () => {
     const newArray = this.props.languageOptions.map(item => ({
@@ -116,19 +136,8 @@ class TalentProfile extends React.Component {
     this.setState({ voiceGender: voiceGender.value });
   };
 
-  handleLanguageAdd = languageId => {
-    const newLang = {
-      userId: this.state.userId,
-      languageId: languageId
-    };
-  };
-
   handleLanguageChange = languages => {
-    if (languages === null) {
-      languages = [];
-    } else {
-      this.setState({ languages });
-    }
+    this.setState({ languages });
   };
 
   handleAccentChange = accents => {
@@ -147,14 +156,14 @@ class TalentProfile extends React.Component {
   };
 
   loyaltyLevel = level => {
-    if(level === 1) {
-        return <img className="loyaltyBadge" src={bronzeMic} alt="bronze-mic" />
+    if (level === 1) {
+      return <img className="loyaltyBadge" src={bronzeMic} alt="bronze-mic" />;
     } else if (level === 2) {
-        return <img className="loyaltyBadge" src={silverMic} alt="silver-mic" />
-    } else if (level ===3) {
-        return <img className="loyaltyBadge" src={goldMic} alt="gold-mic" />
+      return <img className="loyaltyBadge" src={silverMic} alt="silver-mic" />;
+    } else if (level === 3) {
+      return <img className="loyaltyBadge" src={goldMic} alt="gold-mic" />;
     }
-}
+  };
 
   render() {
     return (
@@ -188,6 +197,7 @@ class TalentProfile extends React.Component {
               components={makeAnimated()}
               isMulti
               options={this.state.languageOptions}
+              value={this.state.languages}
             />
           </FormGroup>
           <FormGroup>
@@ -198,6 +208,7 @@ class TalentProfile extends React.Component {
               components={makeAnimated()}
               isMulti
               options={this.state.accentOptions}
+              value={this.state.accents}
             />
           </FormGroup>
           <FormGroup className="bioForm">
@@ -211,7 +222,7 @@ class TalentProfile extends React.Component {
             />
           </FormGroup>
           <Button
-            // onClick={this.handleSubmit}
+            onClick={this.handleSubmit}
             outline
             size="lg"
             className="saveButton"
@@ -226,6 +237,7 @@ class TalentProfile extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  prevLanguages: state.languageReducer.prevLanguages,
   languageOptions: state.languageReducer.languages,
   accentOptions: state.accentReducer.accents,
   talent: state.getTalentReducer.talent
@@ -237,5 +249,6 @@ export default connect(mapStateToProps, {
   getTalent,
   addTalentAccent,
   addTalentLanguage,
-  addTalentBio
+  addTalentBio,
+  getPrevTLang
 })(TalentProfile);

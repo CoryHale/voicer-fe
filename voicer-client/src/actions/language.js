@@ -11,6 +11,10 @@ export const ADD_TALENT_LANGUAGE_START = 'ADD_TALENT_LANGUAGE_START';
 export const ADD_TALENT_LANGUAGE_SUCCESS = 'ADD_TALENT_LANGUAGE_SUCCESS';
 export const ADD_TALENT_LANGUAGE_FAIL = 'ADD_TALENT_LANGUAGE_FAIL';
 
+export const GET_PREV_TLANG_START = 'GET_PREV_TLANG_START';
+export const GET_PREV_TLANG_SUCCESS = 'GET_PREV_TLANG_SUCCESS';
+export const GET_PREV_TLANG_FAIL = 'GET_PREV_TLANG_FAIL';
+
 export const addTalentLanguage = newTalentLanguage => dispatch => {
   dispatch({ type: ADD_TALENT_LANGUAGE_START });
   return axiosWithAuth()
@@ -35,6 +39,21 @@ export const getLanguages = () => dispatch => {
     .catch(err => {
       dispatch({
         type: GET_LANGUAGES_SUCESS,
+        payload: err
+      });
+    });
+};
+
+export const getPrevTLang = userId => dispatch => {
+  dispatch({ type: GET_PREV_TLANG_START });
+  return axiosWithAuth()
+    .get(`${dbUrl}/api/talents/talentLanguage/${userId}`)
+    .then(res => {
+      dispatch({ type: GET_PREV_TLANG_SUCCESS, payload: res.data });
+    })
+    .catch(err => {
+      dispatch({
+        type: GET_PREV_TLANG_FAIL,
         payload: err
       });
     });

@@ -4,13 +4,18 @@ import {
   GET_LANGUAGES_FAILURE,
   ADD_TALENT_LANGUAGE_START,
   ADD_TALENT_LANGUAGE_SUCCESS,
-  ADD_TALENT_LANGUAGE_FAIL
+  ADD_TALENT_LANGUAGE_FAIL,
+  GET_PREV_TLANG_START,
+  GET_PREV_TLANG_SUCCESS,
+  GET_PREV_TLANG_FAIL,
+  GET_JOBS_SUCCESS
 } from '../actions';
 
 const initialState = {
   languages: null,
   error: null,
-  talentLanguages: null
+  talentLanguages: null,
+  prevLanguages: []
 };
 
 export const languageReducer = (state = initialState, action) => {
@@ -41,6 +46,22 @@ export const languageReducer = (state = initialState, action) => {
         ...state
       };
     case ADD_TALENT_LANGUAGE_FAIL:
+      return {
+        ...state,
+        error: action.payload
+      };
+    case GET_PREV_TLANG_START:
+      return {
+        ...state,
+        error: null,
+        prevLanguages: []
+      };
+    case GET_PREV_TLANG_SUCCESS:
+      return {
+        ...state,
+        prevLanguages: action.payload
+      };
+    case GET_PREV_TLANG_FAIL:
       return {
         ...state,
         error: action.payload

@@ -48,6 +48,10 @@ export {
   ADD_TALENT_ACCENT_START,
   ADD_TALENT_ACCENT_SUCCESS,
   ADD_TALENT_ACCENT_FAIL,
+  GET_PREV_TACC_START,
+  GET_PREV_TACC_SUCCESS,
+  GET_PREV_TACC_FAIL,
+  getPrevTAcc,
   getAccents,
   addTalentAccent
 } from './accent';

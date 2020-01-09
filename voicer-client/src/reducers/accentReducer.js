@@ -4,13 +4,17 @@ import {
   GET_ACCENTS_FAIL,
   ADD_TALENT_ACCENT_START,
   ADD_TALENT_ACCENT_SUCCESS,
-  ADD_TALENT_ACCENT_FAIL
+  ADD_TALENT_ACCENT_FAIL,
+  GET_PREV_TACC_START,
+  GET_PREV_TACC_SUCCESS,
+  GET_PREV_TACC_FAIL
 } from '../actions';
 
 const initialState = {
-  accents: null,
+  accents: [],
   error: null,
-  talentAccents: null
+  talentAccents: [],
+  prevAccents: []
 };
 
 export const accentReducer = (state = initialState, action) => {
@@ -29,7 +33,6 @@ export const accentReducer = (state = initialState, action) => {
     case GET_ACCENTS_FAIL:
       return {
         ...state,
-        accents: null,
         error: null
       };
     case ADD_TALENT_ACCENT_START:
@@ -42,6 +45,21 @@ export const accentReducer = (state = initialState, action) => {
         ...state
       };
     case ADD_TALENT_ACCENT_FAIL:
+      return {
+        ...state,
+        error: action.payload
+      };
+    case GET_PREV_TACC_START:
+      return {
+        ...state,
+        error: null
+      };
+    case GET_PREV_TACC_SUCCESS:
+      return {
+        ...state,
+        prevAccents: action.payload
+      };
+    case GET_PREV_TACC_FAIL:
       return {
         ...state,
         error: action.payload

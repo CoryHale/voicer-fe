@@ -11,6 +11,10 @@ export const ADD_TALENT_ACCENT_START = 'ADD_TALENT_ACCENT_START';
 export const ADD_TALENT_ACCENT_SUCCESS = 'ADD_TALENT_ACCENT_SUCCESS';
 export const ADD_TALENT_ACCENT_FAIL = 'ADD_TALENT_ACCENT_FAIL';
 
+export const GET_PREV_TACC_START = 'GET_PREV_TACC_START';
+export const GET_PREV_TACC_SUCCESS = 'GET_PREV_TACC_SUCCESS';
+export const GET_PREV_TACC_FAIL = 'GET_PREV_TACC_FAIL';
+
 export const addTalentAccent = newTalentAccent => dispatch => {
   dispatch({ type: ADD_TALENT_ACCENT_START });
   return axiosWithAuth()
@@ -37,5 +41,17 @@ export const getAccents = () => dispatch => {
         type: GET_ACCENTS_FAIL,
         payload: err
       });
+    });
+};
+
+export const getPrevTAcc = userId => dispatch => {
+  dispatch({ type: GET_PREV_TACC_START });
+  return axiosWithAuth()
+    .get(`${dbUrl}/api/talents/talentAccent/${userId}`)
+    .then(res => {
+      dispatch({ type: GET_PREV_TACC_SUCCESS, payload: res.data });
+    })
+    .catch(err => {
+      dispatch({ type: GET_PREV_TACC_FAIL, payload: err });
     });
 };

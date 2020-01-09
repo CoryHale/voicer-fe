@@ -15,6 +15,10 @@ export const GET_PREV_TLANG_START = 'GET_PREV_TLANG_START';
 export const GET_PREV_TLANG_SUCCESS = 'GET_PREV_TLANG_SUCCESS';
 export const GET_PREV_TLANG_FAIL = 'GET_PREV_TLANG_FAIL';
 
+export const DEL_PREV_TLANG_START = 'DEL_PREV_TLANG_START';
+export const DEL_PREV_TLANG_SUCCESS = 'DEL_PREV_TLANG_SUCCESS';
+export const DEL_PREV_TLANG_FAIL = 'DEL_PREV_TLANG_FAIL';
+
 export const addTalentLanguage = newTalentLanguage => dispatch => {
   dispatch({ type: ADD_TALENT_LANGUAGE_START });
   return axiosWithAuth()
@@ -56,5 +60,17 @@ export const getPrevTLang = userId => dispatch => {
         type: GET_PREV_TLANG_FAIL,
         payload: err
       });
+    });
+};
+
+export const delPrevTLang = talentLanguageId => dispatch => {
+  dispatch({ type: DEL_PREV_TLANG_START });
+  return axiosWithAuth()
+    .delete(`${dbUrl}/api/talents/talentLanguage/${talentLanguageId}`)
+    .then(res => {
+      dispatch({ type: DEL_PREV_TLANG_SUCCESS });
+    })
+    .catch(err => {
+      dispatch({ type: DEL_PREV_TLANG_FAIL, payload: err });
     });
 };

@@ -8,7 +8,9 @@ import {
   GET_PREV_TLANG_START,
   GET_PREV_TLANG_SUCCESS,
   GET_PREV_TLANG_FAIL,
-  GET_JOBS_SUCCESS
+  DEL_PREV_TLANG_START,
+  DEL_PREV_TLANG_SUCCESS,
+  DEL_PREV_TLANG_FAIL
 } from '../actions';
 
 const initialState = {
@@ -62,6 +64,21 @@ export const languageReducer = (state = initialState, action) => {
         prevLanguages: action.payload
       };
     case GET_PREV_TLANG_FAIL:
+      return {
+        ...state,
+        error: action.payload
+      };
+    case DEL_PREV_TLANG_START:
+      return {
+        ...state,
+        error: null
+      };
+    case DEL_PREV_TLANG_SUCCESS:
+      return {
+        ...state,
+        error: null
+      };
+    case DEL_PREV_TLANG_FAIL:
       return {
         ...state,
         error: action.payload

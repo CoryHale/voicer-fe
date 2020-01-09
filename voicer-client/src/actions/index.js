@@ -36,6 +36,10 @@ export {
   GET_PREV_TLANG_START,
   GET_PREV_TLANG_SUCCESS,
   GET_PREV_TLANG_FAIL,
+  DEL_PREV_TLANG_START,
+  DEL_PREV_TLANG_SUCCESS,
+  DEL_PREV_TLANG_FAIL,
+  delPrevTLang,
   getLanguages,
   addTalentLanguage,
   getPrevTLang

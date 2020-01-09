@@ -8,7 +8,7 @@ import {
   addTalentLanguage,
   getPrevTLang
 } from '../../actions/language';
-import { getAccents, addTalentAccent } from '../../actions/accent';
+import { getAccents, addTalentAccent, getPrevTAcc } from '../../actions/accent';
 import { getTalent } from '../../actions';
 import { addTalentBio } from '../../actions/talentBio';
 import makeAnimated from 'react-select/animated';
@@ -54,16 +54,26 @@ class TalentProfile extends React.Component {
     this.props
       .getTalent(this.state.userId)
       .then(res => this.setState({ talent: this.props.talent[0] }));
-    this.props.getLanguages().then(this.modifyLanguage);
-    this.props.getAccents().then(this.modifyAccents);
+    this.props.getLanguages().then(res => {
+      const languageOptions = this.modLanguage(this.props.languageOptions);
+      this.setState({ languageOptions: languageOptions });
+    });
+    this.props.getAccents().then(res => {
+      const accentOptions = this.modAccents(this.props.accentOptions);
+      this.setState({ accentOptions: accentOptions });
+    });
     this.props.getPrevTLang(this.state.userId).then(res => {
-      const prevLang = this.testModify(this.props.prevLanguages);
+      const prevLang = this.modLanguage(this.props.prevLanguages);
       this.setState({ languages: prevLang });
+    });
+    this.props.getPrevTAcc(this.state.userId).then(res => {
+      const prevAcc = this.modAccents(this.props.prevAccents);
+      this.setState({ accents: prevAcc });
     });
   }
 
-  testModify = ogArray => {
-    const newArray = ogArray.map(item => ({
+  modLanguage = origArray => {
+    const newArray = origArray.map(item => ({
       value: item.language,
       label: item.language,
       languageId: item.languageId
@@ -72,23 +82,13 @@ class TalentProfile extends React.Component {
     return newArray;
   };
 
-  modifyLanguage = () => {
-    const newArray = this.props.languageOptions.map(item => ({
-      value: item.language,
-      label: item.language,
-      languageId: item.languageId
-    }));
-
-    this.setState({ languageOptions: newArray });
-  };
-
-  modifyAccents = () => {
-    const newArray = this.props.accentOptions.map(item => ({
+  modAccents = origArray => {
+    const newArray = origArray.map(item => ({
       value: item.accent,
       label: item.accent,
       accentId: item.accentId
     }));
-    this.setState({ accentOptions: newArray });
+    return newArray;
   };
 
   submitTalentLanguages = talentLangArray => {
@@ -238,6 +238,7 @@ class TalentProfile extends React.Component {
 
 const mapStateToProps = state => ({
   prevLanguages: state.languageReducer.prevLanguages,
+  prevAccents: state.accentReducer.prevAccents,
   languageOptions: state.languageReducer.languages,
   accentOptions: state.accentReducer.accents,
   talent: state.getTalentReducer.talent
@@ -250,5 +251,6 @@ export default connect(mapStateToProps, {
   addTalentAccent,
   addTalentLanguage,
   addTalentBio,
-  getPrevTLang
+  getPrevTLang,
+  getPrevTAcc
 })(TalentProfile);

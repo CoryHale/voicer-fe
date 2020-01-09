@@ -6,7 +6,8 @@ import jwt from 'jsonwebtoken';
 import {
   getLanguages,
   addTalentLanguage,
-  getPrevTLang
+  getPrevTLang,
+  delPrevTLang
 } from '../../actions/language';
 import { getAccents, addTalentAccent, getPrevTAcc } from '../../actions/accent';
 import { getTalent } from '../../actions';
@@ -91,6 +92,50 @@ class TalentProfile extends React.Component {
     return newArray;
   };
 
+  addLanguages = languages => {
+    languages.forEach(newLang => {
+      const langSubmit = {
+        userId: this.state.userId,
+        languageId: newLang.languageId
+      };
+      this.props.addTalentLanguage(langSubmit);
+      return langSubmit;
+    });
+  };
+
+  testTalentLanguages = talentLangArray => {
+    if (this.props.prevLanguages.length > 0) {
+      console.log('delete prev languages');
+      this.props.prevLanguages.forEach(delLang => {
+        this.props.delPrevTLang(delLang.userId, delLang.talentLanguageId).then(
+          this.props.getPrevTLang(this.state.userId).then(res => {
+            const prevLang = this.modLanguage(this.props.prevLanguages);
+            this.setState({ languages: prevLang });
+          })
+        );
+      });
+      if (talentLangArray) {
+        console.log('add languages to profile');
+        this.addLanguages(talentLangArray).then(
+          this.props.getPrevTLang(this.state.userId).then(res => {
+            const prevLang = this.modLanguage(this.props.prevLanguages);
+            this.setState({ languages: prevLang });
+          })
+        );
+      } else {
+        console.log('no languages to add');
+      }
+    } else {
+      console.log('no previous languages found');
+      if (talentLangArray && talentLangArray.length > 0) {
+        console.log('adding languages after no previous langs found');
+        this.addLanguages(talentLangArray);
+      } else {
+        console.log('no previous languages, no languages to add');
+      }
+    }
+  };
+
   submitTalentLanguages = talentLangArray => {
     talentLangArray.forEach(newLang => {
       const langSubmit = {
@@ -146,8 +191,8 @@ class TalentProfile extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    this.submitTalentLanguages(this.state.languages);
-    this.submitTalentAccents(this.state.accents);
+    this.testTalentLanguages(this.state.languages);
+    // this.submitTalentAccents(this.state.accents);
     this.submitChanges(
       this.state.voiceGender,
       this.state.voiceAge,
@@ -252,5 +297,6 @@ export default connect(mapStateToProps, {
   addTalentLanguage,
   addTalentBio,
   getPrevTLang,
-  getPrevTAcc
+  getPrevTAcc,
+  delPrevTLang
 })(TalentProfile);

@@ -31,7 +31,7 @@ export const register = creds => dispatch => {
       error: 'Please enter your last name'
     });
   }
-  if (!creds.email.includes('@') || !creds.email.includes('.')) {
+  if (!creds.email.includes('@') && !creds.email.includes('.')) {
     dispatch({
       type: REGISTER_FAILED,
       error: 'Please enter a correct email'
